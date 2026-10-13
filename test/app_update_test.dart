@@ -26,6 +26,16 @@ void main() {
     expect(UpdateInfo.fromJson(null), isNull);
   });
 
+  test('版本清单：以字符串下发也能解（GitHub 资产是 octet-stream，dio 不解 JSON）', () {
+    const raw =
+        '{"versionCode": 4, "versionName": "1.0.3", "apkUrl": "https://x/a.apk", "sha256": "AB"}';
+    final info = parseManifestBody(raw)!;
+    expect(info.versionCode, 4);
+    expect(info.sha256, 'ab');
+    expect(parseManifestBody('{"versionCode": 4}'), isNull);
+    expect(parseManifestBody('not json at all'), isNull);
+  });
+
   test('进度字段能被 int 写、也能被抹回 null', () {
     // copyWith 的哨兵参数是 Object?，早期版本把 progress 强转 double? 直接抛了。
     final s = const AppUpdateState().copyWith(progress: 0, downloadedBytes: '0 B');

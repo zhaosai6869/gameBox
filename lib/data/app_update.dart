@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
@@ -50,6 +51,20 @@ class UpdateInfo {
   }
 }
 
+/// 清单响应体。GitHub 的 Release 资产一律按 `application/octet-stream` 下发，dio
+/// 因此不解 JSON 而是给回字符串（实测 1.0.2 就是这样被判成「格式不对」的），
+/// 所以字符串和已解析的 Map 两种形态都要认。
+UpdateInfo? parseManifestBody(Object? body) {
+  if (body is String) {
+    try {
+      body = jsonDecode(body);
+    } on FormatException {
+      return null;
+    }
+  }
+  return UpdateInfo.fromJson(body);
+}
+
 /// 与原生侧的安装通道：FileProvider 授权 + ACTION_VIEW 拉起系统安装器。
 const installerChannel = MethodChannel('com.zhaos.gamebox/install');
 
@@ -73,7 +88,7 @@ class AppUpdater {
     } on DioException catch (e) {
       throw Exception('取版本清单失败：${e.message ?? e.type}');
     }
-    final info = UpdateInfo.fromJson(r.data);
+    final info = parseManifestBody(r.data);
     if (info == null) throw Exception('版本清单格式不对（缺 versionCode 或 apkUrl）');
     return info;
   }
