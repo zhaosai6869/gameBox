@@ -196,8 +196,11 @@ curl -sIL -o /dev/null -w "%{http_code}\n" \
 | tag | versionName | versionCode | 说明 |
 | --- | --- | --- | --- |
 | `v1.0.2` | 1.0.2 | 3 | 首个正式版，含金铲铲与不思议迷宫资料库及应用内更新 |
+| `v1.0.3` | 1.0.3 | 4 | 去掉界面里的来源站与更新时间；修复检查更新总报「版本清单格式不对」 |
 
-资产名分别是 `gamebox-v1.0.2-release.apk`（sha256 `fc3fab8a62bca5b9ba17111418d6d9d1b83bf39bf9b4dd04dcdb1b02bae56bb3`，69,340,461 字节）和 `update.json`。
+1.0.2 的资产是 `gamebox-v1.0.2-release.apk`（sha256 `fc3fab8a62bca5b9ba17111418d6d9d1b83bf39bf9b4dd04dcdb1b02bae56bb3`，69,340,461 字节）；1.0.3 的是 `gamebox-v1.0.3-release.apk`（sha256 `dcf2e57166d8f2a919ddbbf14c2c72ee69fbd4e8c3bf1d2386ddb8d514240ffa`，69,324,077 字节）。两份清单都叫 `update.json`。
+
+**已知影响**：1.0.2 这个包带着清单解析的 bug（GitHub 的 Release 资产按 `application/octet-stream` 下发，dio 不解 JSON，`UpdateInfo.fromJson` 收到字符串就判 null），所以**它自己永远收不到更新提示**，设置页只会显示「版本清单格式不对」。1.0.2 → 1.0.3 这一跳必须手动装 APK（同一个正式 keystore 签名，覆盖安装不丢已抓数据）；装上 1.0.3 之后，往后的版本才走应用内自更新。
 
 `update.json` 走的是 GitHub 的资源 CDN，改完重传后线上可能要等一两分钟才刷出新内容，验证时别被旧值误导。
 
