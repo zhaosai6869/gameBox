@@ -143,23 +143,10 @@ enum _Kind { lineup, trait, champion, item, other }
 
 /// 「其他」分区下的栏目：type 即 Entity.type，对应官方 jcc.qq.com 的资料库子页。
 /// byMode=false 表示该栏目的数据不随模式切换（特殊机制按官方 mechanism_tab 的类别归属）。
-const jccOtherColumns =
-    <({String type, String label, String source, IconData icon, bool byMode})>[
-      (
-        type: 'augment',
-        label: '强化符文',
-        source: 'jcc.qq.com/#/hex',
-        icon: Icons.auto_awesome,
-        byMode: true,
-      ),
-      (
-        type: 'mech',
-        label: '特殊机制',
-        source: 'jcc.qq.com/#/mech',
-        icon: Icons.settings_suggest,
-        byMode: false,
-      ),
-    ];
+const jccOtherColumns = <({String type, String label, IconData icon, bool byMode})>[
+  (type: 'augment', label: '强化符文', icon: Icons.auto_awesome, byMode: true),
+  (type: 'mech', label: '特殊机制', icon: Icons.settings_suggest, byMode: false),
+];
 
 /// 模式选择行：只有一个模式时不占位。
 class _ModeRow extends ConsumerWidget {
@@ -376,7 +363,7 @@ class _JccSectionState extends ConsumerState<_JccSection> {
 
   /// 「其他」分区的一个栏目入口，点进去才是列表。
   Widget _columnCard(
-    ({String type, String label, String source, IconData icon, bool byMode}) c,
+    ({String type, String label, IconData icon, bool byMode}) c,
     String detail,
   ) {
     final accent = gameAccent['jcc']!;
@@ -388,11 +375,7 @@ class _JccSectionState extends ConsumerState<_JccSection> {
           c.label,
           style: const TextStyle(fontSize: 16.5, fontWeight: FontWeight.w700),
         ),
-        subtitle: Text(
-          '$detail · 官方 ${c.source}',
-          maxLines: 2,
-          style: const TextStyle(fontSize: 12),
-        ),
+        subtitle: Text(detail, maxLines: 2, style: const TextStyle(fontSize: 12)),
         trailing: const Icon(Icons.chevron_right, color: Color(0xFF68727F)),
         onTap: () => context.push('/jcc/column?type=${c.type}'),
       ),

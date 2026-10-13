@@ -219,11 +219,6 @@ Entity rowToEntity(ScrapedEntity s, String crawledAt) => Entity(
 
 final crawlProvider = NotifierProvider<CrawlNotifier, CrawlState>(CrawlNotifier.new);
 
-/// 每个游戏最后一次成功写入数据的时间，抽屉里的「更新时间」读这个。
-final lastCrawledProvider = StreamProvider<Map<String, DateTime?>>(
-  (ref) => ref.watch(dbProvider).watchLastCrawled(),
-);
-
 /// 「更新」跑完一步的结果。
 class StepResult {
   final String label;

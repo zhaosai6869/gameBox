@@ -229,23 +229,11 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                             _detailError!,
                             style: const TextStyle(color: Colors.redAccent, fontSize: 12),
                           )
-                        : Text(
-                            row.sourceUrl,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        : null,
                     onTap: _loadingDetail ? null : () => _loadDetail(row),
                   ),
                 ),
               BlocksView(blocks, mode: row.mode),
-              if (row.sourceUrl.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Text(
-                    '来源：${row.sourceUrl}\n采集：${row.crawledAt.substring(0, row.crawledAt.length > 16 ? 16 : row.crawledAt.length)}',
-                    style: const TextStyle(color: Color(0xFF68727F), fontSize: 12),
-                  ),
-                ),
             ],
           );
         },

@@ -85,22 +85,6 @@ class AppDatabase extends _$AppDatabase {
     entities,
   )..where((t) => t.uid.equals(uid))).watch().map((l) => l.isEmpty ? null : l.first);
 
-  /// 每个游戏最后一次成功写入数据的时间（`crawled_at` 是同一批写入打的同一个
-  /// ISO 串，所以按字典序取 MAX 就是最新一批）。没有行的游戏不出现在表里。
-  Stream<Map<String, DateTime?>> watchLastCrawled() =>
-      customSelect(
-        'SELECT game_id, MAX(crawled_at) AS last_at FROM entities GROUP BY game_id',
-        readsFrom: {entities},
-      ).watch().map(
-        (rows) => {
-          for (final r in rows)
-            r.read<String>('game_id'): () {
-              final raw = r.read<String?>('last_at') ?? '';
-              return raw.isEmpty ? null : DateTime.tryParse(raw);
-            }(),
-        },
-      );
-
   Future<void> replaceForType(
     String gameId,
     String mode,

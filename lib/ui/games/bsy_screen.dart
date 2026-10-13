@@ -114,27 +114,27 @@ const bsyListOnlyColumns = {'shizhu', 'jitan', 'shrine', 'quiz'};
 /// 「其他」分区下的十二个栏目入口，全部已接好源：十一个是 `bsyColumnSources` 里的页面
 /// （飞艇图鉴按类别分三页），「游戏攻略」是 `bsyGuideModules` 那十四篇固定文章。
 /// 条目在栏目页首次打开时按需抓。
-const bsyOtherColumns = <({String type, String label, IconData icon, String source})>[
-  (type: 'feiting', label: '飞艇图鉴', icon: Icons.rocket_launch, source: '3DM 手游'),
-  (type: 'robot', label: '天空机器人', icon: Icons.smart_toy_outlined, source: '3DM 手游'),
-  (type: 'abyss', label: '深渊咆哮', icon: Icons.nights_stay, source: '4399 专区'),
-  (type: 'shenlong', label: '神龙许愿', icon: Icons.auto_awesome, source: '4399 专区'),
-  (type: 'yaoji', label: '药剂大全', icon: Icons.local_pharmacy, source: '4399 专区'),
-  (type: 'shizhu', label: '命运石柱', icon: Icons.castle, source: '18183 专区'),
-  (type: 'jitan', label: '机械祭坛', icon: Icons.electrical_services, source: '4399 专区'),
-  (type: 'shrine', label: '东方神龛', icon: Icons.temple_buddhist, source: '4399 专区'),
-  (type: 'dp', label: 'DP 攻略', icon: Icons.workspace_premium, source: '4399 专区'),
-  (type: 'sky', label: '天空副本', icon: Icons.flight, source: '4399 专区'),
-  (type: 'quiz', label: '天空问题', icon: Icons.help_outline, source: '4399 答题器'),
-  (type: 'guide', label: '游戏攻略', icon: Icons.menu_book_outlined, source: '4399 专区'),
+const bsyOtherColumns = <({String type, String label, IconData icon})>[
+  (type: 'feiting', label: '飞艇图鉴', icon: Icons.rocket_launch),
+  (type: 'robot', label: '天空机器人', icon: Icons.smart_toy_outlined),
+  (type: 'abyss', label: '深渊咆哮', icon: Icons.nights_stay),
+  (type: 'shenlong', label: '神龙许愿', icon: Icons.auto_awesome),
+  (type: 'yaoji', label: '药剂大全', icon: Icons.local_pharmacy),
+  (type: 'shizhu', label: '命运石柱', icon: Icons.castle),
+  (type: 'jitan', label: '机械祭坛', icon: Icons.electrical_services),
+  (type: 'shrine', label: '东方神龛', icon: Icons.temple_buddhist),
+  (type: 'dp', label: 'DP 攻略', icon: Icons.workspace_premium),
+  (type: 'sky', label: '天空副本', icon: Icons.flight),
+  (type: 'quiz', label: '天空问题', icon: Icons.help_outline),
+  (type: 'guide', label: '游戏攻略', icon: Icons.menu_book_outlined),
 ];
 
 /// 入口卡片的副标题：抓过的报条数，没抓过的提示「打开时抓取」，没源的报「内容待接入」。
 /// 游戏攻略是代码里写死的模块目录（`bsyGuideModules`，不联网），所以直接报模块数。
-String _columnHint(String type, String source, int rows) {
-  if (type == 'guide') return '${bsyGuideModules.length} 个模块 · $source';
+String _columnHint(String type, int rows) {
+  if (type == 'guide') return '${bsyGuideModules.length} 个模块';
   if (!bsyColumnHasSource(type)) return '内容待接入';
-  return rows > 0 ? '共 $rows 条 · $source' : '$source · 打开时抓取';
+  return rows > 0 ? '共 $rows 条' : '打开时抓取';
 }
 
 class _BsySection extends ConsumerStatefulWidget {
@@ -314,7 +314,7 @@ class _BsySectionState extends ConsumerState<_BsySection> {
                 style: const TextStyle(fontSize: 16.5, fontWeight: FontWeight.w700),
               ),
               subtitle: Text(
-                _columnHint(c.type, c.source, all.where((e) => e.type == c.type).length),
+                _columnHint(c.type, all.where((e) => e.type == c.type).length),
                 style: const TextStyle(fontSize: 12, color: Color(0xFF68727F)),
               ),
               trailing: const Icon(Icons.chevron_right, color: Color(0xFF68727F)),
@@ -566,9 +566,7 @@ class _BsyColumnScreenState extends ConsumerState<BsyColumnScreen> {
     );
   }
 
-  Widget _columnPlaceholder(
-    ({String type, String label, IconData icon, String source})? col,
-  ) {
+  Widget _columnPlaceholder(({String type, String label, IconData icon})? col) {
     final accent = gameAccent['bsy']!;
     // 用 Column 而不是 ListView：SliverFillRemaining 里再套一个可滚动子树不会画出来。
     return Column(

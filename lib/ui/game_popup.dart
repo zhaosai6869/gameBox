@@ -137,7 +137,6 @@ class _GameItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final accent = gameAccent[gameId] ?? fgColor;
-    final stamp = ref.watch(lastCrawledProvider).value?[gameId];
     final progress = ref.watch(updateProvider);
     final mine = progress.gameId == gameId;
     return InkWell(
@@ -173,28 +172,13 @@ class _GameItem extends ConsumerWidget {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        gameName,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-                          color: selected ? accent : fgColor,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        formatStamp(stamp),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: stamp == null ? _dim : _muted,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    gameName,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                      color: selected ? accent : fgColor,
+                    ),
                   ),
                 ),
                 if (selected) Icon(Icons.check_circle, color: accent, size: 20),
@@ -234,7 +218,6 @@ class _GameItem extends ConsumerWidget {
 }
 
 const _muted = Color(0xFF9AA3B2);
-const _dim = Color(0xFF68727F);
 const _line = Color(0xFF232A35);
 const _fail = Color(0xFFFF6B6B);
 const _warn = Color(0xFFE8B84B);
@@ -286,14 +269,6 @@ class _UpdateButton extends ConsumerWidget {
       ),
     );
   }
-}
-
-/// 抽屉里那行「更新时间」，用户点名要 YYYY-MM-DD HH:mm:ss。
-String formatStamp(DateTime? t) {
-  if (t == null) return '暂无数据';
-  String two(int v) => v.toString().padLeft(2, '0');
-  return '${t.year}-${two(t.month)}-${two(t.day)} '
-      '${two(t.hour)}:${two(t.minute)}:${two(t.second)}';
 }
 
 /// 全量更新会覆盖该游戏所有栏目的旧数据、期间锁住其他刷新，所以点一下先确认。
