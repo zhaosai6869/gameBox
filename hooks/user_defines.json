@@ -1,0 +1,5 @@
+{
+  "sqlite3": {
+    "url_pattern": "https://gh-proxy.com/https://github.com/simolus3/sqlite3.dart/releases/download/$RELEASE_TAG/$FILENAME"
+  }
+}

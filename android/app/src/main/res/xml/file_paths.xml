@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 下载的 APK 落在应用外部私有目录（Dart 侧 getExternalStorageDirectory），
+     安装器只能通过 FileProvider 的 content:// 读到它。 -->
+<paths>
+    <external-files-path
+        name="apk"
+        path="." />
+</paths>

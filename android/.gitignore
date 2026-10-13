@@ -1,0 +1,14 @@
+/.gradle
+/captures/
+/local.properties
+GeneratedPluginRegistrant.java
+.cxx/
+
+# gradlew / gradlew.bat / gradle-wrapper.jar 是 Flutter 模板默认忽略的，
+# 这里刻意纳入版本控制：克隆下来不装本地 Gradle 也能直接 flutter build。
+
+# Remember to never publicly share your keystore.
+# See https://flutter.dev/to/reference-keystore
+key.properties
+**/*.keystore
+**/*.jks

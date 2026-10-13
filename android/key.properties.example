@@ -1,0 +1,6 @@
+# Copy to key.properties and point at your own release keystore.
+# key.properties and the keystore must never be committed.
+storeFile=/absolute/path/to/gamebox-release.jks
+storePassword=changeme
+keyAlias=gamebox
+keyPassword=changeme
