@@ -126,6 +126,8 @@ flutter build apk --release
 
 产物在 `build/app/outputs/flutter-apk/app-release.apk`（约 66MB）。清单地址已经是代码里的默认值，正常发版不需要 `--dart-define`。
 
+上传前把它重命名成 `gamebox-v<versionName>-release.apk`，例如 `gamebox-v1.0.3-release.apk`。这个名字会直接出现在下载直链里，对外更清楚；App 不关心文件名，只认清单里的 `apkUrl`。
+
 ## 3. 算 sha256 和字节数
 
 ```bash
@@ -143,7 +145,7 @@ stat -c %s app-release.apk      # Linux/Git Bash
 {
   "versionCode": 4,
   "versionName": "1.0.3",
-  "apkUrl": "https://github.com/zhaosai6869/gameBox/releases/download/v1.0.3/app-release.apk",
+  "apkUrl": "https://github.com/zhaosai6869/gameBox/releases/download/v1.0.3/gamebox-v1.0.3-release.apk",
   "sha256": "上一步算出的64位小写十六进制",
   "size": 69340461,
   "changelog": "1. 不思议迷宫新增东方神龛栏目\n2. 修复阵容页筛选重置的问题",
@@ -157,15 +159,15 @@ stat -c %s app-release.apk      # Linux/Git Bash
 
 ## 5. 建 GitHub Release 并上传两个文件
 
-创建一个 Release，tag 用 `v1.0.3`（和 versionName 对齐），然后**同时上传 `app-release.apk` 和 `update.json`** 两个资产。
+创建一个 Release，tag 用 `v1.0.3`（和 versionName 对齐），然后**同时上传 `gamebox-v1.0.3-release.apk` 和 `update.json`** 两个资产。
 
 关键：**必须取消勾选 Draft 和 "Set as a pre-release"**。App 走的是 `/releases/latest/download/`，只有标记为 latest 的正式版才能被这个地址解析到；草稿和预发布版本都取不到，用户那边就表现为「检查更新失败」。
 
-用命令行发（需要 [`gh` CLI](https://cli.github.com/)）：
+用命令行发（需要 [`gh` CLI](https://cli.github.com/)，本机没装时走网页上传一样）：
 
 ```bash
 gh release create v1.0.3 \
-  build/app/outputs/flutter-apk/app-release.apk \
+  build/app/outputs/flutter-apk/gamebox-v1.0.3-release.apk \
   update.json \
   --latest --title "1.0.3" --notes "本次更新说明"
 ```
@@ -178,9 +180,9 @@ gh release create v1.0.3 \
 # 清单能取到、字段对
 curl -sL https://github.com/zhaosai6869/gameBox/releases/latest/download/update.json
 
-# 安装包直链可下载（GitHub 会 302 跳转，App 里 dio 跟得动）
+# 安装包直链可下载（GitHub 会 302 跳到 release-assets，App 里 dio 跟得动）
 curl -sIL -o /dev/null -w "%{http_code}\n" \
-  https://github.com/zhaosai6869/gameBox/releases/download/v1.0.3/app-release.apk
+  https://github.com/zhaosai6869/gameBox/releases/download/v1.0.3/gamebox-v1.0.3-release.apk
 
 # 复核这个包的签名和已装版本一致（不一致的话老用户升级会失败）
 "$ANDROID_HOME/build-tools/36.0.0/apksigner.bat" verify --print-certs \
@@ -188,6 +190,16 @@ curl -sIL -o /dev/null -w "%{http_code}\n" \
 ```
 
 最后一步在旧手机上验证：装着一个低版本，打开 App 应该自动弹更新；设置页里「检查更新」也能手动触发。
+
+## 已发布版本
+
+| tag | versionName | versionCode | 说明 |
+| --- | --- | --- | --- |
+| `v1.0.2` | 1.0.2 | 3 | 首个正式版，含金铲铲与不思议迷宫资料库及应用内更新 |
+
+资产名分别是 `gamebox-v1.0.2-release.apk`（sha256 `fc3fab8a62bca5b9ba17111418d6d9d1b83bf39bf9b4dd04dcdb1b02bae56bb3`，69,340,461 字节）和 `update.json`。
+
+`update.json` 走的是 GitHub 的资源 CDN，改完重传后线上可能要等一两分钟才刷出新内容，验证时别被旧值误导。
 
 ## 本地联调更新链路（不发版）
 
